@@ -1,13 +1,14 @@
-@import "iconfont.css";
-@import "../font/iconfont.css";
+@import "common/base.css";
+@import "common/iconfont.css";
+@import "common/iconfontl.css";
 /*视网膜屏幕就放大，然后通过缩小viewport来还原，*/
-//@media only screen and(-webkit-min-device-pixel-ratio:1){
-//  html{
-//      font-size: 100px !important;
-//      
-//  }
-//  
-//}
+@media only screen and(-webkit-min-device-pixel-ratio:2){
+  html{
+      font-size: 100px !important;
+      
+  }
+  
+}
 
 /*兼容语句函数*/
 @mixin com($pro,$val){

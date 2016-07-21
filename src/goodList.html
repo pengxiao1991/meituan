@@ -3,11 +3,11 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,initial-scale=1.0,user-scalable=no">
-		<!--<meta name="viewport" content="initial-scale=1"/>-->
-		<!--<meta name="apple-mobile-web-app-capable" content="yes">
+		
+		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />-->
-		<title>list</title>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>goodList</title>
 		
 		<script type="text/javascript">
 			//如果是视网膜屏幕，就将页面缩小，因为此时html的字体放大了一倍
@@ -16,7 +16,7 @@
 				if (window.devicePixelRatio>=2) {
 					var meta = document.getElementsByTagName("meta")[1];
 					meta.content = "minimum-scale=0.5,maximum-scale=0.5,initial-scale=0.5,width=device-width,user-scalable=no";
-					document.documentElement.style.fontSize = "100px";
+					
 					
 					
 				} 
@@ -24,8 +24,8 @@
 			})();
 			
 			</script>
-			<link rel="stylesheet" type="text/css" href="css/base.css"/>
-			<link rel="stylesheet" href="css/list.css" />
+			
+			<link rel="stylesheet" href="css/goodList.css" />
 		
 	</head>
 	<body>
@@ -217,6 +217,6 @@
 			</div>
 		</footer>
 		<script src="js/zepto.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="js/list.js" ></script>
+		<script type="text/javascript" src="js/goodList.js" ></script>
 	</body>
 </html>
