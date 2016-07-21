@@ -1,3 +1,9 @@
+//导入zepto部分
+var $ = Zepto = require("./framework/zepto.js");
+//导入swipe部分
+var Swiper = require("./framework/swiper.jquery.js");
+//导入iscroll部分
+var IScroll = require("./framework/iscroll.js");
 $(function(){
 	//屏幕滑动
 	var mySwiper = new Swiper('.swiper-container', {
