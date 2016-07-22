@@ -5,7 +5,16 @@ var Swiper = require("./framework/swiper.jquery.js");
 //导入基于jquery或zepto的懒加载插件
 require("./plugins/jquery-jdLoad.js");
 //导入iscroll部分
-var IScroll = require("./framework/iscroll-infinite.js");
+var IScroll = require("./framework/iscroll.js");
+console.log(IScroll);
+
+window.onload = function(){
+	var myScroll = new IScroll('#wrapper', { mouseWheel: true });
+	document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+}
+
+
+
 
 
 
@@ -34,6 +43,8 @@ var IScroll = require("./framework/iscroll-infinite.js");
 });*/
 
 $(function(){
+	//弹性滚动
+	
 	//微信接口调用，选择图片接口和二维码扫描接口
 	/*wx.ready(function(){
 		//头像按钮点击后调用微信接口
@@ -63,9 +74,10 @@ $(function(){
 
 
 	$.ajax({
+
 		
 		"type":"get",
-		"url":"http://localhost:8020/api/goods.php",
+		"url":"http://localhost:8010/api/goods.php",
 		"dataType":"json",
 		"async":true,
 		"success":function(data){
@@ -133,6 +145,9 @@ $(function(){
 // function updateContent (el, data) {
 // 	el.innerHTML = data;
 // }
+// 
+	//弹性滚动
+	var myScroll = new IScroll('#wrapper', { mouseWheel: true });
 	//屏幕滑动
 	var mySwiper = new Swiper('.swiper-container', {
 		//autoplay: 3000,//可选选项，自动滑动
