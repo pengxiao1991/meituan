@@ -1,4 +1,7 @@
-@import "iconfont.css";
+@import "common/base.css";
+@import "common/swiper.css";
+@import "common/iconfont.css";
+
 html{
 
     font-size: 50px;
@@ -278,7 +281,7 @@ main{
                         overflow: hidden;
                         &::before{
                             font-size: 0.24rem;
-                            content: "免预约";
+                            content: "";
                             position: absolute;
                             left: 0;
                             top: 0;
@@ -287,6 +290,9 @@ main{
                             background: #06C1AE;
                             color: white;
                             transform: translate(-0.62rem,0.26rem) rotate(-45deg);
+                        }
+                        &.no::before{
+                            content: "免预约";
                         }
                         img{
                             max-width: 100%;
@@ -318,7 +324,7 @@ main{
                 }
             }
         }
-        div{
+        >div:last-child{
             height: 0.8rem;
             align-items:center;
             justify-content: space-between;
