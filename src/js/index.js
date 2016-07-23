@@ -4,34 +4,33 @@ var $ = Zepto = require("./framework/zepto.js");
 var Swiper = require("./framework/swiper.jquery.js");
 //导入基于jquery或zepto的懒加载插件
 require("./plugins/jquery-jdLoad.js");
-//导入iscroll部分
-var IScroll = require("./framework/iscroll-infinite.js");
+
 
 
 
 
 
 //注入微信的config
-/*$.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
-        var start = data.indexOf("{");
-        var end  = data.indexOf("}");
-        var objData = data.slice(start,end+1);
-        objData = JSON.parse(objData);
-        console.log(objData);
-      	wx.config({
-            debug: true,
-            appId: objData.appId,
-            timestamp: objData.timestamp,
-            nonceStr: objData.nonceStr,
-            signature: objData.signature,
-            jsApiList: [
-              // 所有要调用的 API 都要加到这个列表中
-              "chooseImage","scanQRCode"
-            ]
-        });
+// $.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
+//         var start = data.indexOf("{");
+//         var end  = data.indexOf("}");
+//         var objData = data.slice(start,end+1);
+//         objData = JSON.parse(objData);
+//         console.log(objData);
+//       	wx.config({
+//             debug: true,
+//             appId: objData.appId,
+//             timestamp: objData.timestamp,
+//             nonceStr: objData.nonceStr,
+//             signature: objData.signature,
+//             jsApiList: [
+//               // 所有要调用的 API 都要加到这个列表中
+//               "chooseImage","scanQRCode"
+//             ]
+//         });
       	
         
-});*/
+// });
 
 $(function(){
 	//微信接口调用，选择图片接口和二维码扫描接口
@@ -65,7 +64,7 @@ $(function(){
 	$.ajax({
 		
 		"type":"get",
-		"url":"http://localhost:8020/api/goods.php",
+		"url":"http://localhost:8010/api/goods.php",
 		"dataType":"json",
 		"async":true,
 		"success":function(data){
@@ -94,45 +93,7 @@ $(function(){
 	
 	});
 	
-	//无限滚动
-// 	console.log($(document).jdLoad);
 
-
-// 	var myScroll;
-// document.body.onload = loaded;
-// function loaded () {
-// 	myScroll = new IScroll('#wrapper', {
-// 		mouseWheel: true,
-// 		infiniteElements: '#scroller .row',
-// 		//infiniteLimit: 2000,
-// 		dataset: requestData,
-// 		dataFiller: updateContent,
-// 		cacheSize: 1000
-// 	});
-// }
-
-// function requestData (start, count) {
-// 	$.ajax({
-// 		"type":"get",
-// 		"url":"http://localhost:8020/api/goods.php",
-// 		"success":function(data){
-// 			console.log(data);
-
-// 			data = JSON.parse(data);
-// 			myScroll.updateCache(start, data);
-// 		}
-// 	});
-	// ajax('dataset.php?start=' + +start + '&count=' + +count, {
-	// 	callback: function (data) {
-	// 		data = JSON.parse(data);
-	// 		myScroll.updateCache(start, data);
-	// 	}
-	// });
-//}
-
-// function updateContent (el, data) {
-// 	el.innerHTML = data;
-// }
 	//屏幕滑动
 	var mySwiper = new Swiper('.swiper-container', {
 		//autoplay: 3000,//可选选项，自动滑动

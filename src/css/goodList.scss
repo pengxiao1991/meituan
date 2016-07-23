@@ -10,6 +10,8 @@
   
 }
 
+
+
 /*兼容语句函数*/
 @mixin com($pro,$val){
     -webkit-#{$pro}:$val;
@@ -35,7 +37,86 @@ html{
     
    
 }
+#myFrame {
+    position:absolute;
+    top:0; left:0;
+}
+//iscroll部分
+#wrapper {
+    position:fixed; 
+    top:1.87rem; bottom:5.09rem; 
+    width:100%;
+    
+    overflow:auto;
+}
 
+#scroller {
+    position:absolute; 
+/*  -webkit-touch-callout:none;*/
+    
+    width:100%;
+    
+    transform: translateZ(0);
+}
+/**
+ *
+ * Pull down styles
+ *
+ */
+#pullDown, #pullUp {
+    background:#fff;
+    height:0.8rem;
+    line-height:0.8rem;
+    padding:0.1rem 0.2rem;
+    border-bottom:1px solid #ccc;
+    font-weight:bold;
+    font-size:0.28rem;
+    color:#888;
+}
+#pullDown{
+    margin-top: -0.8rem;
+}
+#pullUp{
+    margin-bottom: -0.8rem;
+}
+#pullDown .pullDownIcon, #pullUp .pullUpIcon  {
+    display:block; float:left;
+    width:0.8rem; height:0.8rem;
+    background:url(../img/pull-icon@2x.png) 0 0 no-repeat;
+    -webkit-background-size:0.8rem 1.6rem; background-size:0.8rem 1.6rem;
+    -webkit-transition-property:-webkit-transform;
+    -webkit-transition-duration:250ms;  
+}
+#pullDown .pullDownIcon {
+    -webkit-transform:rotate(0deg) translateZ(0);
+}
+#pullUp .pullUpIcon  {
+    -webkit-transform:rotate(-180deg) translateZ(0);
+}
+
+#pullDown.flip .pullDownIcon {
+    -webkit-transform:rotate(-180deg) translateZ(0);
+}
+
+#pullUp.flip .pullUpIcon {
+    -webkit-transform:rotate(0deg) translateZ(0);
+}
+
+#pullDown.loading .pullDownIcon, #pullUp.loading .pullUpIcon {
+    background-position:0 100%;
+    -webkit-transform:rotate(0deg) translateZ(0);
+    -webkit-transition-duration:0ms;
+
+    -webkit-animation-name:loading;
+    -webkit-animation-duration:2s;
+    -webkit-animation-iteration-count:infinite;
+    -webkit-animation-timing-function:linear;
+}
+
+@-webkit-keyframes loading {
+    from { -webkit-transform:rotate(0deg) translateZ(0); }
+    to { -webkit-transform:rotate(360deg) translateZ(0); }
+}
 body{
     font-size: 0.28rem;
     min-width: 6.4rem;
@@ -98,15 +179,23 @@ main{
    
 }
 nav{
+    
+    
     ul{
         display: flex;
         justify-content: space-between;
         height: 0.84rem;
         line-height: 0.84rem;
+         position: relative;
+            z-index: 2;
+            border-bottom: 1px solid #B7B7B7;
+
         li{
+           
             border: 1px solid #B7B7B7;
             margin-left: -1px;
             border-top: 0;
+            border-bottom: 0;
             text-align: center;
             flex: 1;
             color: #666666;
@@ -324,6 +413,7 @@ nav{
                     font-size: 0.24rem;
                     padding: 0.05rem;
                     border-radius: 0.06rem;
+                    margin-right: 0.1rem;
                     &:first-child{
                         background: #FF500B;
                     }
@@ -336,6 +426,7 @@ nav{
                 line-height: 1.41;
                 margin-top: 0.1rem;
                 i{
+                   
                     vertical-align: mmiddle;
                     &:before{
                        
@@ -437,7 +528,9 @@ nav{
             }
     }
 }
-.pap{
+.pap{position: fixed;
+    bottom: 3.97rem;
+    width: 100%;
     display: flex;
     align-items: center;
     height: 0.92rem;
@@ -458,7 +551,10 @@ nav{
         }
     }
 }
-footer{
+footer{width: 100%;
+    box-sizing:border-box;
+    position: fixed;
+    bottom: 0;
     background: #F0EFED;
     padding: 0.2rem;
     >p{
