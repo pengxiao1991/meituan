@@ -5,6 +5,18 @@ var Swiper = require("./framework/swiper.jquery.js");
 //导入基于jquery或zepto的懒加载插件
 require("./plugins/jquery-jdLoad.js");
 
+//导入iscroll部分
+var IScroll = require("./framework/iscroll.js");
+
+
+// window.onload = function(){
+// 	var myScroll = new IScroll('#wrapper', { mouseWheel: true });
+// 	document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+// }
+
+
+
+
 
 
 
@@ -33,6 +45,8 @@ require("./plugins/jquery-jdLoad.js");
 // });
 
 $(function(){
+	
+	
 	//微信接口调用，选择图片接口和二维码扫描接口
 	/*wx.ready(function(){
 		//头像按钮点击后调用微信接口
@@ -62,6 +76,7 @@ $(function(){
 
 
 	$.ajax({
+
 		
 		"type":"get",
 		"url":"http://localhost:8010/api/goods.php",
@@ -92,6 +107,8 @@ $(function(){
 		},
 	
 	});
+	
+
 	
 
 	//屏幕滑动

@@ -41,16 +41,21 @@ var iScroll = require("./framework/iscroll-probe.js");
 
 
 $(function(){
-	//微信接口调用，点击扫扫激活二维码扫描接口
-	$("header b span:last-child").tap(function(){
-		wx.scanQRCode({
-		    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-		    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-		    success: function (res) {
-		    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-		}
+	//微信的config注入完毕后
+	wx.ready(function(){
+		//微信接口调用，点击扫扫激活二维码扫描接口
+		$("header b span:last-child").tap(function(){
+			wx.scanQRCode({
+			    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+			    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+			    success: function (res) {
+				    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+					//扫描完毕后执行
+				}
+			});
 		});
 	});
+	
 	//计算目标距离
 	function countRange(latitude,longitude){
 		wx.openLocation({
@@ -103,7 +108,7 @@ $(function(){
 			
 			$(el).append(getShopData());
 			myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
-			myScroll.scrollTo(0, myScroll.maxScrollY+20, 100, iScroll.utils.ease.bounce);
+			myScroll.scrollTo(0, myScroll.maxScrollY+80, 1, iScroll.utils.ease.quadratic);
 		}, 1);	// <-- Simulate network congestion, remove setTimeout from production!
 	}
 
