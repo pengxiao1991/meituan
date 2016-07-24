@@ -9,10 +9,6 @@ require("./plugins/jquery-jdLoad.js");
 var IScroll = require("./framework/iscroll.js");
 
 
-// window.onload = function(){
-// 	var myScroll = new IScroll('#wrapper', { mouseWheel: true });
-// 	document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
-// }
 
 
 
@@ -23,32 +19,32 @@ var IScroll = require("./framework/iscroll.js");
 
 
 //注入微信的config
-// $.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
-//         var start = data.indexOf("{");
-//         var end  = data.indexOf("}");
-//         var objData = data.slice(start,end+1);
-//         objData = JSON.parse(objData);
-//         console.log(objData);
-//       	wx.config({
-//             debug: true,
-//             appId: objData.appId,
-//             timestamp: objData.timestamp,
-//             nonceStr: objData.nonceStr,
-//             signature: objData.signature,
-//             jsApiList: [
-//               // 所有要调用的 API 都要加到这个列表中
-//               "chooseImage","scanQRCode"
-//             ]
-//         });
+$.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
+        var start = data.indexOf("{");
+        var end  = data.indexOf("}");
+        var objData = data.slice(start,end+1);
+        objData = JSON.parse(objData);
+        console.log(objData);
+      	wx.config({
+            debug: true,
+            appId: objData.appId,
+            timestamp: objData.timestamp,
+            nonceStr: objData.nonceStr,
+            signature: objData.signature,
+            jsApiList: [
+              // 所有要调用的 API 都要加到这个列表中
+              "chooseImage","scanQRCode"
+            ]
+        });
       	
         
-// });
+ });
 
 $(function(){
 	
 	
 	//微信接口调用，选择图片接口和二维码扫描接口
-	/*wx.ready(function(){
+	wx.ready(function(){
 		//头像按钮点击后调用微信接口
 		$(".header-r").tap(function(){
 			wx.chooseImage({
@@ -61,7 +57,7 @@ $(function(){
 			    }
 			});
 		});
-	});*/
+	});
 
 
 
@@ -79,7 +75,7 @@ $(function(){
 
 		
 		"type":"get",
-		"url":"http://localhost:8010/api/goods.php",
+		"url":"../../mock/goods.json",
 		"dataType":"json",
 		"async":true,
 		"success":function(data){
@@ -118,7 +114,6 @@ $(function(){
 		paginationClickable:true
 	});
 	//返回顶部
-	
 	$("#top").tap(function(e){
 		
 		var speed,start = $(window).scrollTop();
