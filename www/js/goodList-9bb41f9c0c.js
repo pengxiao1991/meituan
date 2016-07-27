@@ -44,11 +44,358 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(5);
+	module.exports = __webpack_require__(1);
 
 
 /***/ },
-/* 1 */,
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//导入zepto部分
+	var $ = Zepto = __webpack_require__(2);
+	//导入swipe部分
+	var Swiper = __webpack_require__(3);
+	//导入iscroll部分
+	var iScroll = __webpack_require__(4);
+
+	//注入微信的config
+	// $.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
+	//         var start = data.indexOf("{");
+	//         var end  = data.indexOf("}");
+	//         var objData = data.slice(start,end+1);
+	//         objData = JSON.parse(objData);
+	//         console.log(objData);
+	//       	wx.config({
+	//             debug: true,
+	//             appId: objData.appId,
+	//             timestamp: objData.timestamp,
+	//             nonceStr: objData.nonceStr,
+	//             signature: objData.signature,
+	//             jsApiList: [
+	//               // 所有要调用的 API 都要加到这个列表中
+	//               "scanQRCode","openLocation","getLocation"
+	//             ]
+	//         });
+	      	
+	        
+	// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	$(function(){
+		//微信的config注入完毕后
+		// wx.ready(function(){
+		// 	//微信接口调用，点击扫扫激活二维码扫描接口
+		// 	$("header b span:last-child").tap(function(){
+		// 		wx.scanQRCode({
+		// 		    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+		// 		    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+		// 		    success: function (res) {
+		// 			    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+		// 				//扫描完毕后执行
+		// 			}
+		// 		});
+		// 	});
+		// });
+		
+		//计算目标距离
+		function countRange(latitude,longitude){
+			wx.openLocation({
+			    latitude: 0, // 纬度，浮点数，范围为90 ~ -90
+			    longitude: 0, // 经度，浮点数，范围为180 ~ -180。
+			    name: '', // 位置名
+			    address: '', // 地址详情说明
+			    scale: 1, // 地图缩放级别,整形值,范围从1~28。默认为最大
+			    infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
+			});
+		}
+
+
+
+
+
+		//上滑加载和下拉刷新部分
+		var myScroll,
+		pullDownEl, pullDownOffset,
+		pullUpEl, pullUpOffset;
+		//generatedCount = 0;
+		//在顶部执行下拉后，执行刷新操作
+		function pullDownAction() {
+			console.log(4);
+			setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
+				
+				var el = document.getElementById('thelist');
+
+				// for (i=0; i<3; i++) {
+				// 	li = document.createElement('ul');
+				// 	li.innerText = 'Generated row ' + (++generatedCount);
+				// 	el.insertBefore(li, el.childNodes[0]);
+				// }
+				$(el).prepend(getShopData());
+				//alert(1);
+				myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
+				//myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
+				myScroll.scrollBy(0, -100, 1, iScroll.utils.ease.quadratic);
+			}, 1000);	// <-- Simulate network congestion, remove setTimeout from production!
+		}
+
+		//在底部执行上拉后，执行加载操作，实际上只是发送的请求不同或者是对请求返回的数据 处理不同
+		function pullUpAction () {
+			setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
+				
+				var el = document.getElementById('thelist');
+
+				// for (i=0; i<3; i++) {
+				// 	li = document.createElement('ul');
+				// 	li.innerText = 'Generated row ' + (++generatedCount);
+				// 	el.appendChild(li, el.childNodes[0]);
+				// }
+				
+				$(el).append(getShopData());
+				//alert(2);
+				myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
+				//myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
+			}, 1);	// <-- Simulate network congestion, remove setTimeout from production!
+		}
+
+		//页面加载完后执行的事件，主要是iscroll的初始化
+		function loaded() {
+			pullDownEl = document.getElementById('pullDown');
+			pullDownOffset = pullDownEl.offsetHeight;
+			pullUpEl = document.getElementById('pullUp');	
+			pullUpOffset = pullUpEl.offsetHeight;
+			pullDownEl.style.marginTop = -pullDownOffset+"px";
+			//pullUpEl.style.marginBottom = -pullUpOffset+"px";
+			myScroll = new iScroll("#wrapper",{
+				useTransition: true,
+				topOffset: pullDownOffset,
+				//vScrollbar:false,
+				probeType:3
+			});
+			//隐藏顶部的刷新图片和文字
+			myScroll.scrollBy(0, -pullDownOffset, 1, iScroll.utils.ease.quadratic);
+				//dom节点改变后，刷新iscroll的数据
+				
+				myScroll.on("refresh",function () {
+					console.log(1);
+					if (pullDownEl.className.match('loading')) {
+						pullDownEl.className = '';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
+					} else if (pullUpEl.className.match('loading')) {
+						pullUpEl.className = '';
+						pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+					}
+				});
+				//滚动过程中发生的事件，主要是边界判断
+				myScroll.on("scroll",function () {
+					
+					
+					if (this.y > 80 && !pullDownEl.className.match('flip')) {
+						console.log(3);
+						pullDownEl.className = 'flip';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Release to refresh...';
+						
+					} else if (this.y < -80 && pullDownEl.className.match('flip')) {
+						console.log(4);
+						pullDownEl.className = '';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
+						
+					} else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+						pullUpEl.className = 'flip';
+						pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Release to refresh...';
+						
+					} else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
+						pullUpEl.className = '';
+						pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+						
+					}
+					else{
+						return;
+
+					}
+				});
+				//滚动完毕后，判断执行上拉加载还是下拉刷新事件
+				myScroll.on("scrollEnd",function () {
+					console.log(5);
+					if (pullDownEl.className.match('flip')) {
+						
+						pullDownEl.className = 'loading';
+						pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Loading...';				
+						pullDownAction();	// Execute custom function (ajax call?)
+					} else if (pullUpEl.className.match('flip')) {
+						pullUpEl.className = 'loading';
+						pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Loading...';				
+						pullUpAction();	// Execute custom function (ajax call?)
+					}
+				});
+			
+			
+			//setTimeout(function () { document.getElementById('wrapper').style.left = '0'; }, 800);
+		}
+
+
+		loaded();
+		//获取店铺信息，并将其拼接成html字符串
+		function getShopData(){
+			var html = "";
+			var li_html = "";
+			$.ajax({
+				"type":"get",
+				"url":"../mock/shop.json",
+				"dataType":"json",
+				"async":false,
+				"error":function(data){console.log(data);console.log(1);},
+				"success":function(data){
+					html = "";
+					for(var pro in data){
+						$.ajax({
+							"type":"get",
+							"url":"../mock/goods.json",
+							"dataType":"json",
+							"async":false,
+							"success":function(li_data){
+								li_html = "";
+								for (var i = 0; i < data[pro].goods.length; i++) {
+									li_html+="<li>"
+													+"<a class=\"clear\" href=\"\">"
+													+"<div class=\"fl\">"
+														+"<img src=\"img/"+li_data["goods"+data[pro].goods[i]].src+"\"/>"
+														
+													+"</div>"
+													+"<h3>"+li_data["goods"+data[pro].goods[i]].title+"</h3>"
+													+"<span>"+li_data["goods"+data[pro].goods[i]].description+"</span>"
+													+"<p class=\"clear\"><b>"+li_data["goods"+data[pro].goods[i]].price+"</b>"
+														+"门市价:<span>"+li_data["goods"+data[pro].goods[i]].oldprice+"</span>元<i class=\"fr\">已售<span>"+li_data["goods"+data[pro].goods[i]].sales+"</span></i></p>"
+												+"</a>"
+											+"</li>";
+									
+								}
+							}
+						});
+						html+="<ul>"
+									+"<li>"
+										+"<h4>"+data[pro].name+""
+										+(data[pro].quan?"<i>券</i>":"")
+										+(data[pro].tuan?"<i>团</i>":"")
+										+(data[pro].wai?"<i>外</i>":"")
+										+"</h4>"
+										+"<p class=\"clear\"><i class=\"iconfontl icon-xingxing\"></i>"
+										+"<i class=\"iconfontl icon-xingxing\"></i>"
+										+"<i class=\"iconfontl icon-xingxing\"></i>"
+										+"<i class=\"iconfontl icon-xingxing\"></i>"
+										+"<i class=\"iconfontl icon-banxing01\"></i><span>"+data[pro].level+"</span><a href= class=\"fr\"></a></p>"
+									+"</li>"
+									+li_html
+									+"<li>"
+										+"<span>查看其他1条团购</span>"
+									+"</li>"
+								+"</ul>";
+					}
+					
+				}
+			});
+			return html;
+		}
+		//店铺列表信息初始化
+		$("#thelist").html(getShopData());
+		myScroll.refresh();
+
+
+		//返回顶部
+		$("#top").on("tap",function(e){
+			
+			var start = $(window).scrollTop();
+			var timer = setInterval(function(){
+				
+				var speed = (0-start)/5;
+				speed = speed>0?Math.ceil(speed):Math.floor(speed);
+				if (speed==0) {
+					
+					clearInterval(timer);
+					
+					return;
+					
+				} else{
+					start = start+speed;
+					$(window).scrollTop(start);
+					
+				}
+			},20);
+			
+		});
+		
+		//滚动一段距离后显示回到顶部按钮
+		$(window).scroll(function(){
+			if ($(this).scrollTop()>=1) {
+				$("#top").show();
+			} else{
+				$("#top").hide();
+			}
+		});
+		$(window).scroll();
+		//动态获取覆盖层的高度
+		$("#cover").css({
+			"height":$("#wrapper").height()
+		});
+		//点击后切换分类tab
+		$("nav ul li").tap(function(e){
+			//如果已经是被点击状态就将覆盖层隐藏
+			if ($(this).hasClass("on")) {
+				$(this).removeClass("on");
+				$("#cover").hide();
+				
+			}
+			else{
+				//选中当前的点击项，同时取消其他项的选中
+				$(this).addClass("on").siblings().removeClass("on");
+				//显示覆盖层
+				$("#cover").show();
+				//显示覆盖层对应分类tab的内容
+				$("#cover>div").eq($(this).index()).addClass("on").siblings().removeClass("on");
+			
+			}
+			
+			
+		});
+		
+		//判断是否是swipe事件
+		var flag_isSwipe = false;
+		//注册touchend事件，同时阻止默认行为可阻止click事件
+		$("#cover").on("touchend",function(e){
+			var that = this;
+			
+			setTimeout(function(){
+				//e.preventDefault(); 
+				if (!flag_isSwipe&&e.target==that) {
+					$(that).hide();
+					$("nav ul li").removeClass("on");
+
+				}
+				flag_isSwipe = false;
+			
+			},10);
+			
+		});
+		$("#cover").on("touchmove",function(e){
+			flag_isSwipe = true;
+		});
+		
+		
+	});
+
+
+/***/ },
 /* 2 */
 /***/ function(module, exports) {
 
@@ -6443,218 +6790,7 @@
 
 
 /***/ },
-/* 4 */,
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//导入zepto部分
-	var $ = Zepto = __webpack_require__(2);
-	//导入swipe部分
-	var Swiper = __webpack_require__(3);
-	//导入基于jquery或zepto的懒加载插件
-	__webpack_require__(6);
-
-	//导入iscroll部分
-	var IScroll = __webpack_require__(7);
-
-
-
-
-
-
-
-
-
-
-
-	//注入微信的config
-	$.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
-	        var start = data.indexOf("{");
-	        var end  = data.indexOf("}");
-	        var objData = data.slice(start,end+1);
-	        objData = JSON.parse(objData);
-	        console.log(objData);
-	      	wx.config({
-	            debug: true,
-	            appId: objData.appId,
-	            timestamp: objData.timestamp,
-	            nonceStr: objData.nonceStr,
-	            signature: objData.signature,
-	            jsApiList: [
-	              // 所有要调用的 API 都要加到这个列表中
-	              "chooseImage","scanQRCode"
-	            ]
-	        });
-	      	
-	        
-	 });
-
-	$(function(){
-		
-		
-		//微信接口调用，选择图片接口和二维码扫描接口
-		wx.ready(function(){
-			//头像按钮点击后调用微信接口
-			$(".header-r").tap(function(){
-				wx.chooseImage({
-				    count: 1, // 默认9
-				    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-				    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-				    success: function (res) {
-				        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-				    	//图片处理代码
-				    }
-				});
-			});
-		});
-
-
-
-
-
-
-
-
-
-
-
-
-
-		$.ajax({
-
-			
-			"type":"get",
-			"url":"../../mock/goods.json",
-			"dataType":"json",
-			"async":true,
-			"success":function(data){
-
-			//给需要懒加载的列表内容注册事件
-			$("#like li").each(function(index){
-				
-				var that = this;
-				$(this).jdLoad(function(){
-					if (data["goods"+(index+1)].nobespeak) {
-						$(that).find("div.fl").addClass("no");
-					}
-					$(that).find("div.fl img")[0].src = "img/"+data["goods"+(index+1)].src;
-					$(that).find("h3").html(data["goods"+(index+1)].title);
-					$(that).find("div.fl").next().next("span").html(data["goods"+(index+1)].description);
-					$(that).find("p>b").html(data["goods"+(index+1)].price);
-					$(that).find("p>span").html(data["goods"+(index+1)].oldprice);
-					$(that).find("p>i>span").html(data["goods"+(index+1)].sales);
-				});	
-
-			});
-			
-			$(window).scroll();
-
-			},
-		
-		});
-		
-
-		
-
-		//屏幕滑动
-		var mySwiper = new Swiper('.swiper-container', {
-			//autoplay: 3000,//可选选项，自动滑动
-			pagination : '.swiper-pagination',
-			paginationClickable:true
-		});
-		//返回顶部
-		$("#top").tap(function(e){
-			
-			var speed,start = $(window).scrollTop();
-			var timer = setInterval(function(){
-				
-				speed = (0-start)/5;
-				speed = speed>0?Math.ceil(speed):Math.floor(speed);
-				if (speed==0) {
-					clearInterval(timer);
-					return;
-				} else{
-					start = start+speed;
-					$(window).scrollTop(start);
-					
-				}
-			},20);
-			
-		});
-		//滚动一段距离后显示回到顶部按钮
-		$(window).scroll(function(){
-			if ($(this).scrollTop()>=40) {
-				$("#top").show();
-			} else{
-				$("#top").hide();
-			}
-		});
-		$(window).scroll();
-		
-			
-	});
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	//类似京东的懒加载插件，滚动事件触发时，判断如果停留时间小于50毫秒就认为用户不打算停留
-	//在滚轮滚到指定的元素的上方或是下方时，就执行传入的fn，其他的形参为fn的实参
-	//如果要执行多个函数，可用回调函数来封装之后再传入(建议都使用回调函数(特别是对象.方法名)，因为改变传入函数的作用域为window)
-	//不能传递函数的执行上下文，里面可能有原函数的外部函数的变量，会报错
-	;
-	(function ($) {
-		//滚动到当前内容的中间部分，执行指定的函数
-		
-			$.fn.jdLoad = function(fn){
-				console.log(this);
-				var that = this;
-				//将类数组转换成数组，没有返回第一项
-				var temp = Array.prototype.slice.call(arguments,1);
-				
-				//开关，让fn在指定范围内只执行一次
-				var flag = true;
-				$(window).on("scroll",function(){
-					
-					//如果滚动到指定对象中间
-					if (($(this).scrollTop()>=that.offset().top-$(this).height())&&($(this).scrollTop()<=that.offset().top+that.height())&&flag) {
-						//清除之前的计时器
-						
-						clearTimeout(document.timer);
-						//开启一个新的计时器，50毫秒作为一个估计值，判断用户不打算在当前页面停留
-						document.timer = setTimeout(function(){
-							//执行fn函数,用apply是为了方便传参,改变了原函数的作用域
-							fn.apply(window,temp);
-							//fn函数执行后再关闭开关
-							flag = false;
-							
-							//当前对象的fn执行完后，看看页面是否还有其他符合条件的对象的fn可以执行
-							$(window).scroll();
-						},50);
-					}
-				});
-				return this;
-			}
-		
-	})(Zepto);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/***/ },
-/* 7 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*! iScroll v5.2.0 ~ (c) 2008-2016 Matteo Spinelli ~ http://cubiq.org/license */
@@ -7017,6 +7153,9 @@
 
 		this.options.invertWheelDirection = this.options.invertWheelDirection ? -1 : 1;
 
+		if ( this.options.probeType == 3 ) {
+			this.options.useTransition = false;	}
+
 	// INSERT POINT: NORMALIZATION
 
 		// Some defaults
@@ -7227,13 +7366,19 @@
 			this._translate(newX, newY);
 
 	/* REPLACE START: _move */
-
 			if ( timestamp - this.startTime > 300 ) {
 				this.startTime = timestamp;
 				this.startX = this.x;
 				this.startY = this.y;
+
+				if ( this.options.probeType == 1 ) {
+					this._execEvent('scroll');
+				}
 			}
 
+			if ( this.options.probeType > 1 ) {
+				this._execEvent('scroll');
+			}
 	/* REPLACE END: _move */
 
 		},
@@ -7856,6 +8001,10 @@
 
 			this.scrollTo(newX, newY, 0);
 
+			if ( this.options.probeType > 1 ) {
+				this._execEvent('scroll');
+			}
+
 	// INSERT POINT: _wheel
 		},
 
@@ -8244,7 +8393,7 @@
 				if ( now >= destTime ) {
 					that.isAnimating = false;
 					that._translate(destX, destY);
-
+					
 					if ( !that.resetPosition(that.options.bounceTime) ) {
 						that._execEvent('scrollEnd');
 					}
@@ -8261,11 +8410,16 @@
 				if ( that.isAnimating ) {
 					rAF(step);
 				}
+
+				if ( that.options.probeType == 3 ) {
+					that._execEvent('scroll');
+				}
 			}
 
 			this.isAnimating = true;
 			step();
 		},
+
 		handleEvent: function (e) {
 			switch ( e.type ) {
 				case 'touchstart':
@@ -8518,6 +8672,15 @@
 			newY = this.y + deltaY;
 
 			this._pos(newX, newY);
+
+
+			if ( this.scroller.options.probeType == 1 && timestamp - this.startTime > 300 ) {
+				this.startTime = timestamp;
+				this.scroller._execEvent('scroll');
+			} else if ( this.scroller.options.probeType > 1 ) {
+				this.scroller._execEvent('scroll');
+			}
+
 
 	// INSERT POINT: indicator._move
 

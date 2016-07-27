@@ -3,11 +3,12 @@
 @import "common/swiper.css";
 
 @mixin com($pro,$val){
+	#{$pro}:$val;
 	-webkit-#{$pro}:$val;
 	-moz-#{$pro}:$val;
 	-ms-#{$pro}:$val;
 	-o-#{$pro}:$val;
-	#{$pro}:$val;
+	
 }
 
 
@@ -54,6 +55,12 @@ header{
 			margin-right: 0.4rem;
 			@include com(animation,xz 2s linear infinite);
 			@keyframes xz{
+				0%{}
+				100%{
+					@include com(transform,rotateZ(360deg));
+				}
+			}
+			@-webkit-keyframes xz{
 				0%{}
 				100%{
 					@include com(transform,rotateZ(360deg));
@@ -174,6 +181,17 @@ footer{
 		@include com(transform,translateY(200%));
 		@include com(animation,xs 2s linear infinite);
 		@keyframes xs{
+			0%{opacity: 0;}
+			50%{
+				opacity: 0.8;
+				@include com(transform,translateY(100%));
+			}
+			100%{
+				opacity: 0;
+				@include com(transform,translateY(0));
+			}
+		}
+		@-webkit-keyframes xs{
 			0%{opacity: 0;}
 			50%{
 				opacity: 0.8;

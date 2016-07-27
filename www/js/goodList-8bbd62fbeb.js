@@ -163,7 +163,7 @@
 				$(el).append(getShopData());
 				//alert(2);
 				myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
-				myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
+				//myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
 			}, 1);	// <-- Simulate network congestion, remove setTimeout from production!
 		}
 
@@ -242,14 +242,13 @@
 
 
 		loaded();
-
 		//获取店铺信息，并将其拼接成html字符串
 		function getShopData(){
 			var html = "";
 			var li_html = "";
 			$.ajax({
 				"type":"get",
-				"url":"http://localhost:8010/api/shop.php",
+				"url":"../mock/shop.json",
 				"dataType":"json",
 				"async":false,
 				"error":function(data){console.log(data);console.log(1);},
@@ -258,7 +257,7 @@
 					for(var pro in data){
 						$.ajax({
 							"type":"get",
-							"url":"http://localhost:8010/api/goods.php",
+							"url":"../mock/goods.json",
 							"dataType":"json",
 							"async":false,
 							"success":function(li_data){

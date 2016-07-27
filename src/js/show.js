@@ -3,15 +3,24 @@ var Swiper = require("./framework/swiper.jquery.js");
 
 
 $(function(){
+	//音乐加载完毕后自动播放
+	// $("audio")[0].oncanplaythrough = function(){
+	// 	this.paused = false;
+	// 	$("audio")[0].play();
+	// 	alert(this.paused);
+
+	// }
 	//音乐开始和暂停
 	$("header img").tap(function(){
 		if ($("audio")[0].paused) {
 			$("audio")[0].play();
 			this.style.animationPlayState = "running";
+			//alert(this.style.animationPlayState);
 		}
 		else{
 			$("audio")[0].pause();
 			this.style.animationPlayState = "paused";
+			//alert(this.style.animationPlayState);
 		}
 		
 	});

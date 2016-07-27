@@ -79,7 +79,7 @@ $(function(){
 	//generatedCount = 0;
 	//在顶部执行下拉后，执行刷新操作
 	function pullDownAction() {
-		console.log(4);
+		console.log(9);
 		setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
 			
 			var el = document.getElementById('thelist');
@@ -89,9 +89,12 @@ $(function(){
 			// 	li.innerText = 'Generated row ' + (++generatedCount);
 			// 	el.insertBefore(li, el.childNodes[0]);
 			// }
-			//$(el).prepend(getShopData());
+			myScroll.scrollTo(0, -pullDownOffset, 1, iScroll.utils.ease.quadratic);
+			
+			$(el).prepend(getShopData());
 			//alert(1);
 			myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
+			//myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
 		}, 1);	// <-- Simulate network congestion, remove setTimeout from production!
 	}
 
@@ -110,7 +113,7 @@ $(function(){
 			$(el).append(getShopData());
 			//alert(2);
 			myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
-			myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
+			//myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
 		}, 1);	// <-- Simulate network congestion, remove setTimeout from production!
 	}
 
@@ -120,14 +123,17 @@ $(function(){
 		pullDownOffset = pullDownEl.offsetHeight;
 		pullUpEl = document.getElementById('pullUp');	
 		pullUpOffset = pullUpEl.offsetHeight;
-		pullDownEl.style.marginTop = -pullDownOffset+"px";
+		//pullDownEl.style.marginTop = -pullDownOffset+"px";
 		//pullUpEl.style.marginBottom = -pullUpOffset+"px";
 		myScroll = new iScroll("#wrapper",{
 			useTransition: true,
 			topOffset: pullDownOffset,
-			vScrollbar:false,
+			//vScrollbar:false,
 			probeType:3
 		});
+		//隐藏顶部的刷新图片和文字
+		console.log(-pullDownOffset);
+		myScroll.scrollTo(0, -pullDownOffset, 1, iScroll.utils.ease.quadratic);
 			//dom节点改变后，刷新iscroll的数据
 			
 			myScroll.on("refresh",function () {
@@ -144,12 +150,12 @@ $(function(){
 			myScroll.on("scroll",function () {
 				
 				
-				if (this.y > 80 && !pullDownEl.className.match('flip')) {
+				if (this.y > -pullDownOffset+5 && !pullDownEl.className.match('flip')) {
 					console.log(3);
 					pullDownEl.className = 'flip';
 					pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Release to refresh...';
 					
-				} else if (this.y < -80 && pullDownEl.className.match('flip')) {
+				} else if (this.y < -pullDownOffset-5 && pullDownEl.className.match('flip')) {
 					console.log(4);
 					pullDownEl.className = '';
 					pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
@@ -189,14 +195,13 @@ $(function(){
 
 
 	loaded();
-
 	//获取店铺信息，并将其拼接成html字符串
 	function getShopData(){
 		var html = "";
 		var li_html = "";
 		$.ajax({
 			"type":"get",
-			"url":"http://localhost:8010/api/shop.php",
+			"url":"../mock/shop.json",
 			"dataType":"json",
 			"async":false,
 			"error":function(data){console.log(data);console.log(1);},
@@ -205,7 +210,7 @@ $(function(){
 				for(var pro in data){
 					$.ajax({
 						"type":"get",
-						"url":"http://localhost:8010/api/goods.php",
+						"url":"../mock/goods.json",
 						"dataType":"json",
 						"async":false,
 						"success":function(li_data){

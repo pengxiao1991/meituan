@@ -58,49 +58,34 @@ $(function(){
 			});
 		});
 	});
-
-
-
-
-
-
-
-
-
-
-
-
-
 	$.ajax({
-
-		
 		"type":"get",
-		"url":"../../mock/goods.json",
+		"url":"../mock/goods.json",
 		"dataType":"json",
 		"async":true,
 		"success":function(data){
+			//给需要懒加载的列表内容注册事件
+			$("#like li").each(function(index){
+				
+				var that = this;
+				$(this).jdLoad(function(){
+					if (data["goods"+(index+1)].nobespeak) {
+						$(that).find("div.fl").addClass("no");
+					}
+					$(that).find("div.fl img")[0].src = "img/"+data["goods"+(index+1)].src;
+					$(that).find("h3").html(data["goods"+(index+1)].title);
+					$(that).find("div.fl").next().next("span").html(data["goods"+(index+1)].description);
+					$(that).find("p>b").html(data["goods"+(index+1)].price);
+					$(that).find("p>span").html(data["goods"+(index+1)].oldprice);
+					$(that).find("p>i>span").html(data["goods"+(index+1)].sales);
+				});	
 
-		//给需要懒加载的列表内容注册事件
-		$("#like li").each(function(index){
-			
-			var that = this;
-			$(this).jdLoad(function(){
-				if (data["goods"+(index+1)].nobespeak) {
-					$(that).find("div.fl").addClass("no");
-				}
-				$(that).find("div.fl img")[0].src = "img/"+data["goods"+(index+1)].src;
-				$(that).find("h3").html(data["goods"+(index+1)].title);
-				$(that).find("div.fl").next().next("span").html(data["goods"+(index+1)].description);
-				$(that).find("p>b").html(data["goods"+(index+1)].price);
-				$(that).find("p>span").html(data["goods"+(index+1)].oldprice);
-				$(that).find("p>i>span").html(data["goods"+(index+1)].sales);
-			});	
-
-		});
+			});
 		
 		$(window).scroll();
 
 		},
+		"complete":function(data){console.log(data);}
 	
 	});
 	

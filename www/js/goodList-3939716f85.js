@@ -59,26 +59,26 @@
 	var iScroll = __webpack_require__(4);
 
 	//注入微信的config
-	$.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
-	        var start = data.indexOf("{");
-	        var end  = data.indexOf("}");
-	        var objData = data.slice(start,end+1);
-	        objData = JSON.parse(objData);
-	        console.log(objData);
-	      	wx.config({
-	            debug: true,
-	            appId: objData.appId,
-	            timestamp: objData.timestamp,
-	            nonceStr: objData.nonceStr,
-	            signature: objData.signature,
-	            jsApiList: [
-	              // 所有要调用的 API 都要加到这个列表中
-	              "scanQRCode","openLocation","getLocation"
-	            ]
-	        });
+	// $.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
+	//         var start = data.indexOf("{");
+	//         var end  = data.indexOf("}");
+	//         var objData = data.slice(start,end+1);
+	//         objData = JSON.parse(objData);
+	//         console.log(objData);
+	//       	wx.config({
+	//             debug: true,
+	//             appId: objData.appId,
+	//             timestamp: objData.timestamp,
+	//             nonceStr: objData.nonceStr,
+	//             signature: objData.signature,
+	//             jsApiList: [
+	//               // 所有要调用的 API 都要加到这个列表中
+	//               "scanQRCode","openLocation","getLocation"
+	//             ]
+	//         });
 	      	
 	        
-	});
+	// });
 
 
 
@@ -95,19 +95,19 @@
 
 	$(function(){
 		//微信的config注入完毕后
-		wx.ready(function(){
-			//微信接口调用，点击扫扫激活二维码扫描接口
-			$("header b span:last-child").tap(function(){
-				wx.scanQRCode({
-				    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-				    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-				    success: function (res) {
-					    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-						//扫描完毕后执行
-					}
-				});
-			});
-		});
+		// wx.ready(function(){
+		// 	//微信接口调用，点击扫扫激活二维码扫描接口
+		// 	$("header b span:last-child").tap(function(){
+		// 		wx.scanQRCode({
+		// 		    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+		// 		    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+		// 		    success: function (res) {
+		// 			    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+		// 				//扫描完毕后执行
+		// 			}
+		// 		});
+		// 	});
+		// });
 		
 		//计算目标距离
 		function countRange(latitude,longitude){
@@ -145,7 +145,9 @@
 				$(el).prepend(getShopData());
 				//alert(1);
 				myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
-			}, 1);	// <-- Simulate network congestion, remove setTimeout from production!
+				//myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
+				myScroll.scrollBy(0, -100, 1, iScroll.utils.ease.quadratic);
+			}, 10000);	// <-- Simulate network congestion, remove setTimeout from production!
 		}
 
 		//在底部执行上拉后，执行加载操作，实际上只是发送的请求不同或者是对请求返回的数据 处理不同
@@ -163,7 +165,7 @@
 				$(el).append(getShopData());
 				//alert(2);
 				myScroll.refresh();		// Remember to refresh when contents are loaded (ie: on ajax completion)
-				myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
+				//myScroll.scrollTo(0, myScroll.maxScrollY+pullUpOffset, 1, iScroll.utils.ease.quadratic);
 			}, 1);	// <-- Simulate network congestion, remove setTimeout from production!
 		}
 
@@ -174,11 +176,11 @@
 			pullUpEl = document.getElementById('pullUp');	
 			pullUpOffset = pullUpEl.offsetHeight;
 			pullDownEl.style.marginTop = -pullDownOffset+"px";
-			pullUpEl.style.marginBottom = -pullUpOffset+"px";
+			//pullUpEl.style.marginBottom = -pullUpOffset+"px";
 			myScroll = new iScroll("#wrapper",{
 				useTransition: true,
 				topOffset: pullDownOffset,
-				vScrollbar:false,
+				//vScrollbar:false,
 				probeType:3
 			});
 				//dom节点改变后，刷新iscroll的数据
@@ -242,14 +244,13 @@
 
 
 		loaded();
-
 		//获取店铺信息，并将其拼接成html字符串
 		function getShopData(){
 			var html = "";
 			var li_html = "";
 			$.ajax({
 				"type":"get",
-				"url":"http://localhost:8010/api/shop.php",
+				"url":"../mock/shop.json",
 				"dataType":"json",
 				"async":false,
 				"error":function(data){console.log(data);console.log(1);},
@@ -258,7 +259,7 @@
 					for(var pro in data){
 						$.ajax({
 							"type":"get",
-							"url":"http://localhost:8010/api/goods.php",
+							"url":"../mock/goods.json",
 							"dataType":"json",
 							"async":false,
 							"success":function(li_data){
