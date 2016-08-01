@@ -10,8 +10,6 @@
   
 }
 
-
-
 /*兼容语句函数*/
 @mixin com($pro,$val){
     -webkit-#{$pro}:$val;
@@ -342,7 +340,7 @@ nav{
         }
         .city-b{
             ul{
-                
+                background:white;
                 width: auto;
                  li{
                 &.on{

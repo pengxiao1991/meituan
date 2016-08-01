@@ -88,10 +88,6 @@ $(function(){
 		"complete":function(data){console.log(data);}
 	
 	});
-	
-
-	
-
 	//屏幕滑动
 	var mySwiper = new Swiper('.swiper-container', {
 		//autoplay: 3000,//可选选项，自动滑动

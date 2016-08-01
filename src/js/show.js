@@ -1,7 +1,6 @@
 var $ = Zepto = require("./framework/zepto.js");
 var Swiper = require("./framework/swiper.jquery.js");
 
-
 $(function(){
 	//音乐加载完毕后自动播放
 	// $("audio")[0].oncanplaythrough = function(){
@@ -37,6 +36,7 @@ $(function(){
 	    effect: 'flip',
 	    
 	    onTransitionEnd: function(swiper){
+	    	
 	    	if (swiper.activeIndex!=pre_index) {
 	    		
 	    		$("li").eq(swiper.activeIndex).find(".animated").removeClass("flag");
@@ -46,10 +46,29 @@ $(function(){
 	    		
 	    		
 	    		pre_index = swiper.activeIndex;
+	    		$("li").eq(swiper.activeIndex).css({"opacity":1});
 	    	}
 	      
 
 	    },
+	    onTransitionStart: function(swiper){
+
+	    	
+	    	if (swiper.activeIndex!=pre_index) {
+	    		$("li").eq(pre_index).css({"opacity":0});
+	    		$("li").eq(swiper.activeIndex).css({"opacity":0});
+	    		
+	    		
+
+	    		
+	    		
+	    		
+	    	}
+	    	
+	      
+
+	    },
+
 	    flip: {
             slideShadows : false,
             limitRotation : true,

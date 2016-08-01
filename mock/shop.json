@@ -7,7 +7,8 @@
 		"wai":true,
 		"level":3.8,
 		"location":{"latitude":22.563173,"longitude":113.957038},
-		"goods":[1,2]
+		"goods":[1,2],
+		"region":"宝安区"
 	},
 	"shop2":{
 		"id":2,
@@ -17,7 +18,8 @@
 		"wai":true,
 		"level":3.8,
 		"location":{"latitude":22.563173,"longtitude":113.957038},
-		"goods":[1,2]
+		"goods":[1,2],
+		"region":"宝安区"
 	}
 	
 

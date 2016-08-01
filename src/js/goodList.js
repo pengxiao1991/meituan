@@ -6,26 +6,25 @@ var Swiper = require("./framework/swiper.jquery.js");
 var iScroll = require("./framework/iscroll-probe.js");
 
 //注入微信的config
-// $.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
-//         var start = data.indexOf("{");
-//         var end  = data.indexOf("}");
-//         var objData = data.slice(start,end+1);
-//         objData = JSON.parse(objData);
-//         console.log(objData);
-//       	wx.config({
-//             debug: true,
-//             appId: objData.appId,
-//             timestamp: objData.timestamp,
-//             nonceStr: objData.nonceStr,
-//             signature: objData.signature,
-//             jsApiList: [
-//               // 所有要调用的 API 都要加到这个列表中
-//               "scanQRCode","openLocation","getLocation"
-//             ]
-//         });
-      	
-        
-// });
+$.post("http://pxdanwei.applinzi.com/php/getsign.php",{"url":location.href},function(data){
+        var start = data.indexOf("{");
+        var end  = data.indexOf("}");
+        var objData = data.slice(start,end+1);
+        objData = JSON.parse(objData);
+        console.log(objData);
+      	wx.config({
+            debug: true,
+            appId: objData.appId,
+            timestamp: objData.timestamp,
+            nonceStr: objData.nonceStr,
+            signature: objData.signature,
+            jsApiList: [
+              // 所有要调用的 API 都要加到这个列表中
+              "scanQRCode","openLocation","getLocation"
+            ]
+        });
+      
+});
 
 
 
@@ -41,32 +40,60 @@ var iScroll = require("./framework/iscroll-probe.js");
 
 
 $(function(){
+	 var current_latitude,current_longitude,current_speed,current_accuracy;
 	//微信的config注入完毕后
-	// wx.ready(function(){
-	// 	//微信接口调用，点击扫扫激活二维码扫描接口
-	// 	$("header b span:last-child").tap(function(){
-	// 		wx.scanQRCode({
-	// 		    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-	// 		    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-	// 		    success: function (res) {
-	// 			    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-	// 				//扫描完毕后执行
-	// 			}
-	// 		});
-	// 	});
-	// });
-	
-	//计算目标距离
-	function countRange(latitude,longitude){
-		wx.openLocation({
-		    latitude: 0, // 纬度，浮点数，范围为90 ~ -90
-		    longitude: 0, // 经度，浮点数，范围为180 ~ -180。
-		    name: '', // 位置名
-		    address: '', // 地址详情说明
-		    scale: 1, // 地图缩放级别,整形值,范围从1~28。默认为最大
-		    infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
+	wx.ready(function(){
+		//微信接口调用，点击扫扫激活二维码扫描接口
+		$("header b span:last-child").tap(function(){
+			wx.scanQRCode({
+			    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+			    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+			    success: function (res) {
+				    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+					//扫描完毕后执行
+				}
+			});
 		});
-	}
+		wx.getLocation({
+                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    current_latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    current_longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    current_speed = res.speed; // 速度，以米/每秒计
+                    current_accuracy = res.accuracy; // 位置精度
+                    $("#thelist ul li p a").each(function(index){
+                        var location = JSON.parse(this.lastChild.value);
+                        this.innerHTML = GetDistance(location.latitude,location.longitude,current_latitude,current_longitude)+"千米/"+this.firstChild.data;
+                        //GetDistance(data[pro].location.latitude,data[pro].location.longitude,current_latitude,current_longitude)+"千米/")+data[pro].region
+                    	console.log(this.firstChild);
+                        console.log(this.lastChild.value);
+                    });
+                }
+        });
+	});
+
+	
+	 //进行经纬度转换为距离的计算
+
+    function Rad(d){
+        
+       return d * Math.PI / 180.0;//经纬度转换成三角函数中度分表形式。
+        
+    }
+    //计算距离，参数分别为第一点的纬度，经度；第二点的纬度，经度
+    function GetDistance(lat1,lng1,lat2,lng2){
+ 
+        var radLat1 = Rad(lat1);
+        var radLat2 = Rad(lat2);
+        var a = radLat1 - radLat2;
+        var  b = Rad(lng1) - Rad(lng2);
+        var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
+        Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+        s = s *6378.137 ;// EARTH_RADIUS;
+        s = Math.round(s * 10000) / 10000; //输出为公里
+        //s=s.toFixed(4);
+        return s;
+    }
 
 
 
@@ -243,7 +270,7 @@ $(function(){
 									+"<i class=\"iconfontl icon-xingxing\"></i>"
 									+"<i class=\"iconfontl icon-xingxing\"></i>"
 									+"<i class=\"iconfontl icon-xingxing\"></i>"
-									+"<i class=\"iconfontl icon-banxing01\"></i><span>"+data[pro].level+"</span><a href= class=\"fr\"></a></p>"
+									+"<i class=\"iconfontl icon-banxing01\"></i><span>"+data[pro].level+"</span><a  class=\"fr\">"+(current_latitude==undefined?"":GetDistance(data[pro].location.latitude,data[pro].location.longitude,current_latitude,current_longitude)+"千米/")+data[pro].region+"<input type=hidden value='"+JSON.stringify(data[pro].location)+"'/></a></p>"
 								+"</li>"
 								+li_html
 								+"<li>"
